@@ -14,6 +14,8 @@ type Props = {
 const ShowCounter: FC<Props> = ({ counter }) => {
   const [openEditSheet, setOpenEditSheet] = useState(false);
 
+  console.log(counter.services);
+
   return (
     <AppLayout
       title="Detail Counter"

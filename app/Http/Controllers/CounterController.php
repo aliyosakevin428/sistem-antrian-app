@@ -7,6 +7,8 @@ use App\Http\Requests\UpdateCounterRequest;
 use App\Http\Requests\BulkUpdateCounterRequest;
 use App\Http\Requests\BulkDeleteCounterRequest;
 use App\Models\Counter;
+use App\Models\Queue;
+use App\Models\QueueCall;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -64,13 +66,35 @@ class CounterController extends Controller
     {
         $this->pass("show counter");
 
+        $counter->load('services');
+
+        $waitingCount = Queue::whereIn(
+            'service_id',
+            $counter->services->pluck('id')
+        )
+        ->where('status', 'waiting')
+        ->count();
+
+        $todayServed = QueueCall::where('counter_id', $counter->id)
+            ->whereDate('created_at', today())
+            ->count();
+
         return Inertia::render('counter/show', [
-            'counter' => $counter,
+            'counter' => [
+                'id' => $counter->id,
+                'name' => $counter->name,
+                'is_active' => $counter->is_active,
+                'waiting' => $waitingCount,
+                'today_served' => $todayServed,
+                'operational_started_at' => $counter->operational_started_at,
+                'break_started_at' => $counter->break_started_at,
+            ],
             'permissions' => [
                 'canUpdate' => $this->user->can("update counter"),
                 'canDelete' => $this->user->can("delete counter"),
             ]
         ]);
+
     }
 
     /**
