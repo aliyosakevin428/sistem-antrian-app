@@ -134,5 +134,4 @@ export function formatRupiah(angka: number): string {
   }).format(angka);
 }
 
-export const formatQueueNumber = (num: number, length = 3) =>
-    num.toString().padStart(length, '0');
+export const formatQueueNumber = (num: number, length = 3) => num.toString().padStart(length, '0');

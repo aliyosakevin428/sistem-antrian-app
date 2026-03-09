@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useViewMode } from '@/hooks/use-view-mode';
 import AppLayout from '@/layouts/app-layout';
-import { capitalizeWords } from '@/lib/utils';
+import { capitalizeWords, strLimit } from '@/lib/utils';
 import { SharedData } from '@/types';
 import { QueueCalls } from '@/types/queue_calls';
 import { usePage } from '@inertiajs/react';
@@ -32,7 +32,7 @@ const QueueCallsList: FC<Props> = ({ queue_calls, query }) => {
 
   return (
     <AppLayout
-      title="Panggilan Antrian"
+      title="Daftar Panggilan Antrian"
       description="Atur panggilan antrian dalam sistem antrian Anda."
       actions={[
         {
@@ -98,7 +98,7 @@ const QueueCallsList: FC<Props> = ({ queue_calls, query }) => {
               <TableHead>Panggilan Ke</TableHead>
               <TableHead>Called At</TableHead>
               <TableHead>Finished At</TableHead>
-              <TableHead>Catatan</TableHead>
+              <TableHead className="text-center">Catatan</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -129,7 +129,7 @@ const QueueCallsList: FC<Props> = ({ queue_calls, query }) => {
                   <TableCell>{queue_calls.call_number ? queue_calls.call_number.toString().padStart(2, '0') : '00'}</TableCell>
                   <TableCell>{queue_calls.called_at ? dayjs(queue_calls.called_at).format('DD MMM YYYY - HH:mm') : '-'}</TableCell>
                   <TableCell>{queue_calls.finished_at ? dayjs(queue_calls.finished_at).format('DD MMM YYYY - HH:mm') : '-'}</TableCell>
-                  <TableCell>{queue_calls.notes}</TableCell>
+                  <TableCell className="text-center">{strLimit(queue_calls.notes || '-')}</TableCell>
 
                   <TableCell>
                     {/* {permissions?.canShow && (
